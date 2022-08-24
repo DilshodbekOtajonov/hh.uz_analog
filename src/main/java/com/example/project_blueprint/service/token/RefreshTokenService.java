@@ -2,7 +2,6 @@ package com.example.project_blueprint.service.token;
 
 import com.example.project_blueprint.configs.security.UserDetails;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -42,9 +41,7 @@ public class RefreshTokenService extends AbstractTokenService implements TokenSe
         return super.getSubject(token, refreshTokenSecret);
     }
 
-    private <T> T getClaim(String token, Function<Claims, T> func) {
-        return super.getClaim(token, func, refreshTokenSecret);
-    }
+
 
     public String jwt(@NonNull String subject) {
         return super.jwt(subject, this.refreshTokenSecret, this.amountToAdd, this.unit);

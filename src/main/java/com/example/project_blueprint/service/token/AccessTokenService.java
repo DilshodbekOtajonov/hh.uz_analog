@@ -41,9 +41,6 @@ public class AccessTokenService extends AbstractTokenService implements TokenSer
         return super.getSubject(token, accessTokenSecret);
     }
 
-    private <T> T getClaim(String token, Function<Claims, T> func) {
-        return super.getClaim(token, func, accessTokenSecret);
-    }
 
     public String jwt(@NonNull String subject) {
         return super.jwt(subject, this.accessTokenSecret, this.amountToAdd, this.unit);

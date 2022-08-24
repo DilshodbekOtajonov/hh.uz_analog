@@ -1,11 +1,5 @@
 package com.example.project_blueprint.dto.auth;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.beans.factory.annotation.Value;
-
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -16,6 +10,6 @@ import javax.validation.constraints.Size;
  */
 
 
-public record UserRegisterDTO(@Pattern(regexp = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\\\.[A-Z]{2,6}$") String email,
+public record UserRegisterDTO(@Pattern(regexp = "^[A-Z\\d._%+-]+@[A-Z\\d.-]+\\\\.[A-Z]{2,6}$") String email,
                               @Size(min = 8) String password) {
 }
