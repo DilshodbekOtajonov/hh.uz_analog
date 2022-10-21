@@ -6,6 +6,13 @@ package com.example.project_blueprint.domains.vacancy;
  * hh.uz_analaog/IntelliJ IDEA
  */
 public class Vacancy {
-
+    private Long id;
+    private String title;
+    private Integer specializationId;
+    private City city;
+    private Address address;
+    private Experience experience;
+    private String description;
+    private List<Skill> skillList;
 
 }
