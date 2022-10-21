@@ -14,5 +14,6 @@ public class Vacancy {
     private Experience experience;
     private String description;
     private List<Skill> skillList;
+    private ContactInfo contactInfo;
 
 }

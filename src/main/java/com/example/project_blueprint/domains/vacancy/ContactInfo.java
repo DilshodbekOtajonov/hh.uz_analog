@@ -6,4 +6,14 @@ package com.example.project_blueprint.domains.vacancy;
  * hh.uz_analaog/IntelliJ IDEA
  */
 public class ContactInfo {
+    private Long id;
+    private String descriptionOfCompany;
+    private Long employerId;
+    private EmploymentType employmentType;
+    private WorkingMode workingMode;
+    private Boolean isChatEnabled;
+    private FeedbackType feedbackType;
+    private Schedule schedule;
+    private RespondentType respondentType;
+
 }
