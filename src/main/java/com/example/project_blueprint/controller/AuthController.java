@@ -1,12 +1,11 @@
 package com.example.project_blueprint.controller;
 
 import com.example.project_blueprint.dto.auth.LoginRequestDto;
-import com.example.project_blueprint.dto.auth.UserDto;
+import com.example.project_blueprint.dto.user.UserDto;
 import com.example.project_blueprint.dto.auth.UserRegisterDTO;
 import com.example.project_blueprint.dto.jwt.JwtResponseDto;
 import com.example.project_blueprint.service.auth.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

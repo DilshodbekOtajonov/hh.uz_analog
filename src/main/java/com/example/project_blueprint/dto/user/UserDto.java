@@ -1,6 +1,7 @@
-package com.example.project_blueprint.dto.auth;
+package com.example.project_blueprint.dto.user;
 
 import com.example.project_blueprint.domains.auth.AuthRole;
+import com.example.project_blueprint.dto.GenericDto;
 import com.example.project_blueprint.enums.auth.UserStatus;
 import lombok.*;
 
@@ -18,17 +19,13 @@ import java.util.Set;
 @Getter
 @Setter
 @Builder
-public class UserDto {
+public class UserDto extends GenericDto {
 
     private Long id;
 
     private String email;
 
     private Set<AuthRole> roles;
-
-
-    private UserStatus status;
-
 
     private Boolean isActive;
 }

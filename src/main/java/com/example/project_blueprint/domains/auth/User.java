@@ -28,22 +28,6 @@ public class User {
 
     @Column(unique = true, nullable = false)
     private String email;
-    @Column(nullable = false)
-    private String password;
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-    @JoinTable(
-            name = "user_role",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
-    )
-    private Set<AuthRole> roles = new HashSet<>();
-
-    @Builder.Default
-    @Enumerated(EnumType.STRING)
-    private UserStatus status = UserStatus.ACTIVE;
-
-    @Builder.Default
-    private Boolean isActive = true;
 
 
 }

@@ -1,7 +1,7 @@
 package com.example.project_blueprint.mappers.auth;
 
 import com.example.project_blueprint.domains.auth.User;
-import com.example.project_blueprint.dto.auth.UserDto;
+import com.example.project_blueprint.dto.user.UserDto;
 import org.mapstruct.Mapper;
 
 /**

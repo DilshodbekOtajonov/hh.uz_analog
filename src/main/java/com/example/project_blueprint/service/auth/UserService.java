@@ -3,12 +3,12 @@ package com.example.project_blueprint.service.auth;
 import com.example.project_blueprint.configs.security.UserDetails;
 import com.example.project_blueprint.domains.auth.User;
 import com.example.project_blueprint.dto.auth.LoginRequestDto;
-import com.example.project_blueprint.dto.auth.UserDto;
+import com.example.project_blueprint.dto.user.UserDto;
 import com.example.project_blueprint.dto.auth.UserRegisterDTO;
 import com.example.project_blueprint.dto.jwt.JwtResponseDto;
 import com.example.project_blueprint.exceptions.UserNotFoundException;
 import com.example.project_blueprint.mappers.auth.UserMapper;
-import com.example.project_blueprint.repository.auth.UserRepository;
+import com.example.project_blueprint.repository.auth.UserRepo;
 import com.example.project_blueprint.utils.jwt.JwtUtils;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,12 +29,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class UserService implements UserDetailsService {
-    private final UserRepository userRepository;
+    private final UserRepo userRepository;
     private final AuthenticationManager authenticationManager;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, @Lazy AuthenticationManager authenticationManager, UserMapper userMapper, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepo userRepository, @Lazy AuthenticationManager authenticationManager, UserMapper userMapper, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
         this.userMapper = userMapper;
