@@ -1,4 +1,4 @@
-package com.example.project_blueprint.domains.user;
+package com.example.project_blueprint.domains.address;
 
 /**
  * @author "Otajonov Dilshodbek

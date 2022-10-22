@@ -1,6 +1,7 @@
 package com.example.project_blueprint.domains.vacancy;
 
-import com.example.project_blueprint.domains.user.Address;
+import com.example.project_blueprint.domains.address.Address;
+import com.example.project_blueprint.domains.address.City;
 import com.example.project_blueprint.enums.user.Experience;
 
 import java.util.List;
