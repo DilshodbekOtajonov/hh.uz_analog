@@ -1,5 +1,10 @@
 package com.example.project_blueprint.domains.vacancy;
 
+import com.example.project_blueprint.domains.user.Address;
+import com.example.project_blueprint.enums.user.Experience;
+
+import java.util.List;
+
 /**
  * @author "Otajonov Dilshodbek
  * @since 10/21/22 4:35 PM (Friday)
@@ -13,7 +18,7 @@ public class Vacancy {
     private Address address;
     private Experience experience;
     private String description;
-    private List<Skill> skillList;
+    private List<String> skillList;
     private ContactInfo contactInfo;
 
 }
