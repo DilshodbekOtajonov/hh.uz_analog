@@ -10,7 +10,10 @@ import java.util.Set;
 public class UserDetails {
     @Column(nullable = false)
     private String fullName;
+
+    @Column(nullable = false)
     private String password;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(
             name = "user_role",
