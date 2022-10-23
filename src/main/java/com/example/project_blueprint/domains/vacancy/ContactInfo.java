@@ -11,6 +11,8 @@ import com.example.project_blueprint.enums.vacancy.Schedule;
  * @since 10/21/22 4:58 PM (Friday)
  * hh.uz_analaog/IntelliJ IDEA
  */
+
+
 public class ContactInfo {
     private Long id;
     private String descriptionOfCompany;
