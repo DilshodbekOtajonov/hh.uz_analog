@@ -32,11 +32,13 @@ public class SecurityConfigurer {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable();
-        http.authorizeRequests(expressionInterceptUrlRegistry ->expressionInterceptUrlRegistry
+        http.authorizeRequests(expressionInterceptUrlRegistry -> expressionInterceptUrlRegistry
                 .antMatchers("/auth/login",
                         "/auth/register",
                         "/swagger-ui/**",
-                        "/api-docs/**"
+                        "/api-docs/**",
+                        "/auth/register-with-otp",
+                        "/auth/verify"
                 ).permitAll()
                 .anyRequest().authenticated()
         );

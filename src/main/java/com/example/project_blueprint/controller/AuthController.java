@@ -48,7 +48,7 @@ public class AuthController {
         return ResponseEntity.ok(service.register(dto));
     }
 
-    @PostMapping(value = "verify")
+    @PostMapping(value = "/verify")
     public org.springframework.http.ResponseEntity<JWTToken> verifyOtp(@Valid @RequestBody VerifyTokenRequestDTO verifyTokenRequest)
     {
         String email = verifyTokenRequest.getEmail();
