@@ -2,9 +2,8 @@ package com.example.project_blueprint.configs.security;
 
 import com.example.project_blueprint.domains.auth.AuthPermission;
 import com.example.project_blueprint.domains.auth.AuthRole;
-import com.example.project_blueprint.domains.auth.User;
+import com.example.project_blueprint.domains.auth.UserInfo;
 import lombok.Builder;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -20,14 +19,14 @@ import java.util.Set;
  */
 
 @Builder
-public record UserDetails(User user) implements org.springframework.security.core.userdetails.UserDetails {
+public record UserDetails(UserInfo userInfo) implements org.springframework.security.core.userdetails.UserDetails {
 
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<GrantedAuthority> authorities = new HashSet<>();
-        if (Objects.nonNull(user.getRoles())) {
-            for (AuthRole role : user.getRoles()) {
+        if (Objects.nonNull(userInfo.getRoles())) {
+            for (AuthRole role : userInfo.getRoles()) {
                 authorities.add(new SimpleGrantedAuthority(role.getAuthority()));
                 for (AuthPermission permission : role.getPermissions()) {
                     authorities.add(new SimpleGrantedAuthority(permission.getAuthority()));
@@ -39,22 +38,22 @@ public record UserDetails(User user) implements org.springframework.security.cor
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return userInfo.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return user.getEmail();
+        return userInfo.getEmail();
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return user().getIsActive();
+        return userInfo().getIsActive();
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return user.getIsActive();
+        return userInfo.getIsActive();
     }
 
     @Override
@@ -64,6 +63,6 @@ public record UserDetails(User user) implements org.springframework.security.cor
 
     @Override
     public boolean isEnabled() {
-        return user.getIsActive();
+        return userInfo.getIsActive();
     }
 }

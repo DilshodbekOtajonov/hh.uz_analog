@@ -1,17 +1,15 @@
 package com.example.project_blueprint.controller;
 
-import com.example.project_blueprint.dto.auth.LoginRequestDto;
 import com.example.project_blueprint.dto.auth.UserDto;
 import com.example.project_blueprint.dto.auth.UserRegisterDTO;
 import com.example.project_blueprint.dto.jwt.JwtResponseDto;
 import com.example.project_blueprint.service.auth.UserService;
+import com.example.project_blueprint.service.auth.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -28,15 +26,19 @@ public class AuthController {
 
     private final UserService userService;
 
-    @PostMapping(value = "/login", produces = "application/json")
-    public ResponseEntity<JwtResponseDto> login(@RequestBody LoginRequestDto loginRequest) {
-        return ResponseEntity.ok(userService.login(loginRequest));
+    @PostMapping(value = "/login")
+    @ResponseStatus(HttpStatus.OK)
+    public String login(@RequestParam String email) {
+        userService.login(email);
+        return "email sent successfully";
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<UserDto> register(@Valid @RequestBody UserRegisterDTO dto) {
-        return  ResponseEntity.ok(userService.register(dto));
+    @PostMapping(value = "/checkOTP", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public ResponseEntity<JwtResponseDto> checkOTP(@RequestParam String otp) {
+        return new ResponseEntity<>(userService.checkOTP(otp), HttpStatus.OK);
     }
+
 
 
 }

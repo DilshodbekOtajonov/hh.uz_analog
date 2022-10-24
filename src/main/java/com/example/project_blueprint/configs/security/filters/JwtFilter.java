@@ -5,12 +5,9 @@ import com.example.project_blueprint.service.token.AccessTokenService;
 import com.example.project_blueprint.utils.jwt.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -35,9 +32,11 @@ public class JwtFilter extends OncePerRequestFilter {
     private final static List<String> WHITE_LIST = List.of(
             "/auth/login",
             "/auth/register",
-            "/swagger-ui.*",
+            "/swagger-ui/.*",
+            "/auth/checkOTP",
             "/v3/api-docs.*"
     );
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String requestURI = request.getRequestURI();
@@ -48,7 +47,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 if (accessTokenService.isValid(token)) {
                     String email = accessTokenService.getSubject(token);
                     UserDetails userDetails = userService.loadUserByUsername(email);
-                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null,userDetails.getAuthorities());
+                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 }
@@ -68,6 +67,7 @@ public class JwtFilter extends OncePerRequestFilter {
         }
         return null;
     }
-    private final static Function<String, Boolean> isOpenUrl = (url) -> WHITE_LIST.stream().anyMatch(url::matches);
+
+    private final static Function<String, Boolean> isOpenUrl = (url) -> WHITE_LIST.stream().anyMatch(url::matches);;
 
 }

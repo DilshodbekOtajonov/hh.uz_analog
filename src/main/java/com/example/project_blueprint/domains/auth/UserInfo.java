@@ -19,16 +19,15 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "users")
-public class User {
+@Table(name = "user_infos")
+public class UserInfo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
     private String email;
-    @Column(nullable = false)
+
     private String password;
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(
@@ -40,10 +39,10 @@ public class User {
 
     @Builder.Default
     @Enumerated(EnumType.STRING)
-    private UserStatus status = UserStatus.ACTIVE;
+    private UserStatus status = UserStatus.IN_ACTIVE;
 
     @Builder.Default
-    private Boolean isActive = true;
+    private Boolean isActive = false;
 
 
 }

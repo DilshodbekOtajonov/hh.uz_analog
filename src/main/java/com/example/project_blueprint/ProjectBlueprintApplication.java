@@ -8,8 +8,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 @SpringBootApplication
-@EnableAsync
 @EnableScheduling
+@EnableAsync
 @EnableCaching
 public class ProjectBlueprintApplication {
 

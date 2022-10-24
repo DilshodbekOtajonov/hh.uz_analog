@@ -2,6 +2,7 @@ package com.example.project_blueprint.configs.security;
 
 import com.example.project_blueprint.configs.security.filters.JwtFilter;
 import com.example.project_blueprint.service.auth.UserService;
+import com.example.project_blueprint.service.auth.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,9 +14,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
 /**
  * @author "Otajonov Dilshodbek
@@ -32,11 +30,12 @@ public class SecurityConfigurer {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable();
-        http.authorizeRequests(expressionInterceptUrlRegistry ->expressionInterceptUrlRegistry
+        http.authorizeRequests(expressionInterceptUrlRegistry -> expressionInterceptUrlRegistry
                 .antMatchers("/auth/login",
                         "/auth/register",
                         "/swagger-ui/**",
-                        "/api-docs/**"
+                        "/api-docs/**",
+                        "/auth/checkOTP"
                 ).permitAll()
                 .anyRequest().authenticated()
         );

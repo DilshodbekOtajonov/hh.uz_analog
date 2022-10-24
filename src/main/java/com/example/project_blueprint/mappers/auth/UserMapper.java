@@ -1,6 +1,6 @@
 package com.example.project_blueprint.mappers.auth;
 
-import com.example.project_blueprint.domains.auth.User;
+import com.example.project_blueprint.domains.auth.UserInfo;
 import com.example.project_blueprint.dto.auth.UserDto;
 import org.mapstruct.Mapper;
 
@@ -14,5 +14,5 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-    UserDto fromUser(User user);
+    UserDto fromUser(UserInfo userInfo);
 }
