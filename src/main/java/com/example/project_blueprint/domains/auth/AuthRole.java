@@ -19,28 +19,16 @@ import java.util.Set;
 @Setter
 @Builder
 @Entity
-public class AuthRole implements GrantedAuthority {
+public class AuthRole {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false, unique = true)
     private String code;
 
-    @ManyToMany(cascade = CascadeType.MERGE)
-    @JoinTable(
-            name = "role_permission",
-            joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "permission_id", referencedColumnName = "id")
-    )
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<AuthPermission> permissions;
-
-    @Override
-    public String getAuthority() {
-        return "ROLE_" + this.code;
-    }
 }

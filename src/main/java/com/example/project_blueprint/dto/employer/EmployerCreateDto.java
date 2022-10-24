@@ -2,8 +2,6 @@ package com.example.project_blueprint.dto.employer;
 
 import com.example.project_blueprint.dto.Dto;
 import lombok.*;
-
-import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 

@@ -2,6 +2,9 @@ package com.example.project_blueprint.utils.jwt;
 
 import com.example.project_blueprint.service.token.AccessTokenService;
 import com.example.project_blueprint.service.token.RefreshTokenService;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
 
 /**
  * @author "Otajonov Dilshodbek

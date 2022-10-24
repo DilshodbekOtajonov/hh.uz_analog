@@ -15,21 +15,15 @@ import javax.persistence.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Entity
-public class AuthPermission implements GrantedAuthority {
+@Table(name = "auth_permission")
+public class AuthPermission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false, unique = true)
     private String code;
 
-    @Override
-    public String getAuthority() {
-        return this.code;
-    }
 }

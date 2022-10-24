@@ -35,7 +35,7 @@ public class AbstractTokenService {
                          int amountToAdd, TemporalUnit unit) {
         return jwtBuilder(subject, secret, amountToAdd, unit).compact();
     }
-
+///////////////////////////////////////////////////////////////nonnull
     protected Jws<Claims> jwtClaims(@NonNull final String token, @NonNull final String secret) {
         try {
             return Jwts.parser().setSigningKey(secret).parseClaimsJws(token);

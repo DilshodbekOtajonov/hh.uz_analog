@@ -1,6 +1,6 @@
 package com.example.project_blueprint.service.token;
 
-import com.example.project_blueprint.configs.security.UserDetails;
+import com.example.project_blueprint.domains.auth.CustomUserDetails;
 
 /**
  * @author "Otajonov Dilshodbek
@@ -9,7 +9,7 @@ import com.example.project_blueprint.configs.security.UserDetails;
  */
 public interface TokenService {
 
-    String generateToken(UserDetails userDetails);
+    String generateToken(String email);
 
     Boolean isValid(String token);
 

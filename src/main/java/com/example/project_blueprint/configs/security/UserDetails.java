@@ -4,7 +4,6 @@ import com.example.project_blueprint.domains.auth.AuthPermission;
 import com.example.project_blueprint.domains.auth.AuthRole;
 import com.example.project_blueprint.domains.auth.User;
 import lombok.Builder;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -28,9 +27,9 @@ public record UserDetails(User user) implements org.springframework.security.cor
         Set<GrantedAuthority> authorities = new HashSet<>();
         if (Objects.nonNull(user.getRoles())) {
             for (AuthRole role : user.getRoles()) {
-                authorities.add(new SimpleGrantedAuthority(role.getAuthority()));
+                authorities.add(new SimpleGrantedAuthority(role.getCode()));
                 for (AuthPermission permission : role.getPermissions()) {
-                    authorities.add(new SimpleGrantedAuthority(permission.getAuthority()));
+                    authorities.add(new SimpleGrantedAuthority(permission.getCode()));
                 }
             }
         }
@@ -39,7 +38,7 @@ public record UserDetails(User user) implements org.springframework.security.cor
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return null;
     }
 
     @Override
@@ -49,12 +48,12 @@ public record UserDetails(User user) implements org.springframework.security.cor
 
     @Override
     public boolean isAccountNonExpired() {
-        return user().getIsActive();
+        return user().isActive();
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return user.getIsActive();
+        return user.isBlocked();
     }
 
     @Override
@@ -64,6 +63,6 @@ public record UserDetails(User user) implements org.springframework.security.cor
 
     @Override
     public boolean isEnabled() {
-        return user.getIsActive();
+        return user.isActive();
     }
 }

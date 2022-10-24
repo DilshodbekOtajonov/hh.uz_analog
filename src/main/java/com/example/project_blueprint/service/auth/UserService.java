@@ -1,24 +1,45 @@
 package com.example.project_blueprint.service.auth;
 
-import com.example.project_blueprint.configs.security.UserDetails;
-import com.example.project_blueprint.domains.auth.User;
-import com.example.project_blueprint.dto.auth.LoginRequestDto;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.example.project_blueprint.domains.auth.CustomUserDetails;
+
+import com.example.project_blueprint.domains.auth.OTPEntity;
+import com.example.project_blueprint.dto.auth.UserRegisterDto;
+import com.example.project_blueprint.dto.auth.UserRegisterWithOtpDto;
 import com.example.project_blueprint.dto.user.UserDto;
-import com.example.project_blueprint.dto.auth.UserRegisterDTO;
-import com.example.project_blueprint.dto.jwt.JwtResponseDto;
+import com.example.project_blueprint.enums.auth.UserStatus;
+import com.example.project_blueprint.response.ResponseEntity;
+
+import com.example.project_blueprint.domains.auth.User;
 import com.example.project_blueprint.exceptions.UserNotFoundException;
 import com.example.project_blueprint.mappers.auth.UserMapper;
-import com.example.project_blueprint.repository.auth.UserRepo;
+import com.example.project_blueprint.repository.auth.AuthRoleRepository;
+import com.example.project_blueprint.repository.auth.UserRepository;
+
+import com.example.project_blueprint.service.mail.MailService;
+import com.example.project_blueprint.service.mail.OTPService;
 import com.example.project_blueprint.utils.jwt.JwtUtils;
+import com.example.project_blueprint.utils.jwt.Utils;
+import com.example.project_blueprint.validators.auth.UserValidator;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import javax.mail.MessagingException;
+import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @author "Otajonov Dilshodbek
@@ -28,42 +49,69 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class UserService implements UserDetailsService {
-    private final UserRepo userRepository;
+public class UserService
+        implements UserDetailsService {
+    private final AuthRoleRepository authRoleRepository;
+    private final MailService mailService;
+    private OTPService otpService;
+
+    private final UserRepository repository;
+    private final UserValidator validator;
     private final AuthenticationManager authenticationManager;
-    private final UserMapper userMapper;
+    private final UserMapper mapper;
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepo userRepository, @Lazy AuthenticationManager authenticationManager, UserMapper userMapper, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
+    public UserService(AuthRoleRepository authRoleRepository, MailService mailService, UserRepository repository, UserValidator validator, @Lazy AuthenticationManager authenticationManager, UserMapper mapper, PasswordEncoder passwordEncoder, Utils utils) {
+        this.authRoleRepository = authRoleRepository;
+        this.mailService = mailService;
+        this.repository = repository;
+        this.validator = validator;
         this.authenticationManager = authenticationManager;
-        this.userMapper = userMapper;
+        this.mapper = mapper;
         this.passwordEncoder = passwordEncoder;
     }
 
+    public ResponseEntity<List<UserDto>> getAll() {
+        List<UserDto> userDtos = new ArrayList<>();
+        List<User> authUsers = repository.findAll();
+        return new ResponseEntity<>(userDtos);
+    }
+
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public CustomUserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-        User user = userRepository.findByEmail(email).
+        User user = repository.findByEmail(email).
                 orElseThrow(() -> new UserNotFoundException("user not found by email %s".formatted(email)));
-        return new com.example.project_blueprint.configs.security.UserDetails(user);
+        return new CustomUserDetails(user);
+    }
+
+    private UserDetails verifyToken(String token) {
+        DecodedJWT decodedJWT = JwtUtils.accessTokenService.getVerifier().verify(token);
+        String email = decodedJWT.getSubject();
+        return loadUserByUsername(email);
     }
 
 
-    public JwtResponseDto login(LoginRequestDto request) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.email(), request.password()));
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        String accessToken = JwtUtils.accessTokenService.generateToken(userDetails);
-        String refreshToken = JwtUtils.refreshTokenService.generateToken(userDetails);
-        return new JwtResponseDto(accessToken, refreshToken, "Bearer");
+    public void login(String email){
+        Optional<User> byEmail = repository.findByEmail(email);
+        if (byEmail.isEmpty()) {
+            User user = repository.save(User.builder()
+                    .email(email)
+                    .build());
+        }
+        otpService.generateOtp(email);
     }
 
-    public UserDto register(UserRegisterDTO dto) {
-        User user = userRepository.save(User.builder()
+    public Boolean registerWithOtp(UserRegisterWithOtpDto dto) {
+        return otpService.generateOtp(dto.email());
+    }
+
+    public UserDto register(UserRegisterDto dto) {
+        User user = repository.save(User.builder()
                 .email(dto.email())
-                .password(passwordEncoder.encode(dto.password()))
+                .firstName(dto.firstName())
+                .lastName(dto.lastName())
                 .build());
-        return userMapper.fromUser(user);
+        return mapper.fromUser(user);
     }
 }

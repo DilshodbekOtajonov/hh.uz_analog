@@ -1,13 +1,14 @@
 package com.example.project_blueprint.service.token;
 
-import com.example.project_blueprint.configs.security.UserDetails;
-import io.jsonwebtoken.Claims;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.example.project_blueprint.domains.auth.CustomUserDetails;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
-import java.util.function.Function;
 
 /**
  * @author "Otajonov Dilshodbek
@@ -27,8 +28,8 @@ public class RefreshTokenService extends AbstractTokenService implements TokenSe
 
 
     @Override
-    public String generateToken(UserDetails userDetails) {
-        return jwt(userDetails.getUsername());
+    public String generateToken(String email) {
+        return jwt(email);
     }
 
     @Override
@@ -45,5 +46,14 @@ public class RefreshTokenService extends AbstractTokenService implements TokenSe
 
     public String jwt(@NonNull String subject) {
         return super.jwt(subject, this.refreshTokenSecret, this.amountToAdd, this.unit);
+    }
+
+    public Algorithm getAlgorithm() {
+        return Algorithm.HMAC256(refreshTokenSecret.getBytes());
+    }
+
+
+    public JWTVerifier getVerifier(){
+        return JWT.require(getAlgorithm()).build();
     }
 }

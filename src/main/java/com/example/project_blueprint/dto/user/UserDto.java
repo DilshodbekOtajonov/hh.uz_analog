@@ -1,12 +1,8 @@
 package com.example.project_blueprint.dto.user;
 
-import com.example.project_blueprint.domains.auth.AuthRole;
 import com.example.project_blueprint.dto.GenericDto;
-import com.example.project_blueprint.enums.auth.UserStatus;
 import lombok.*;
 
-import javax.persistence.*;
-import java.util.Set;
 
 /**
  * @author "Otajonov Dilshodbek
@@ -25,7 +21,7 @@ public class UserDto extends GenericDto {
 
     private String email;
 
-    private Set<AuthRole> roles;
+//    private Set<AuthRole> roles;
 
     private Boolean isActive;
 }

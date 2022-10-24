@@ -13,7 +13,7 @@ import java.util.Optional;
  */
 
 @Repository
-public interface UserRepo extends JpaRepository<User, Long>, GenericRepo{
+public interface UserRepository extends JpaRepository<User, Long>, GenericRepo{
 
     Optional<User> findByEmail(String email);
 }
