@@ -1,7 +1,6 @@
 package com.example.resume_service.service;
 
 import com.example.resume_service.domains.SkillEntity;
-import com.example.resume_service.repository.SkillRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +16,7 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class SkillService {
-    private final SkillRepository repository;
+
 
 
     public List<SkillEntity> save(List<String> skill) {

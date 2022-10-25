@@ -4,7 +4,6 @@ import com.example.resume_service.domains.ExperienceEntity;
 import com.example.resume_service.domains.SkillEntity;
 import com.example.resume_service.domains.WorkPlacesEntity;
 import com.example.resume_service.dto.ExperienceCreateDTO;
-import com.example.resume_service.repository.ExperienceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +17,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ExperienceService {
-    private final ExperienceRepository repository;
+
     private final WorkPlacesService workPlacesService;
     private final SkillService skillService;
 
@@ -37,7 +36,5 @@ public class ExperienceService {
         return experienceEntity ;
     }
 
-    public List<ExperienceEntity> getAll() {
-        return repository.findAll ();
-    }
+
 }

@@ -2,7 +2,6 @@ package com.example.resume_service.service;
 
 import com.example.resume_service.domains.WorkPlacesEntity;
 import com.example.resume_service.dto.WorkPlacesCreateDto;
-import com.example.resume_service.repository.WorkPlacesRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +18,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class WorkPlacesService {
-    private final WorkPlacesRepository rep;
+
 
     public List<WorkPlacesEntity> save(List<WorkPlacesCreateDto> dto) {
         List<WorkPlacesEntity> workPlacesEntityList = new ArrayList<> ();
@@ -39,9 +38,7 @@ public class WorkPlacesService {
         return workPlacesEntityList;
     }
 
-    public List<WorkPlacesEntity> getAll() {
-        return rep.findAll ();
-    }
+
 
     public List<WorkPlacesEntity> checkWorkPlaces(List<WorkPlacesEntity> workPlacesId) {
         List<WorkPlacesEntity> workPlacesEntities = new ArrayList<> ();

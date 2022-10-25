@@ -4,7 +4,6 @@ import com.example.resume_service.domains.LanguageEntity;
 import com.example.resume_service.domains.LanguageSkillsEntity;
 import com.example.resume_service.dto.LanguageSkillsCreateDto;
 import com.example.resume_service.enums.LanguageLevel;
-import com.example.resume_service.repository.LanguageSkillRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +19,7 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class LanguageSkillsService {
-    private final LanguageSkillRepository repository;
+
 
     private final LanguageService service;
 
