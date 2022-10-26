@@ -3,6 +3,7 @@ package com.example.project_blueprint.service.mail;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
@@ -13,6 +14,7 @@ public class OtpGenerator {
 
     private static final Integer EXPIRE_MIN = 1;
     private LoadingCache<String, Integer> otpCache;
+    private LoadingCache<String, String> otpCacheForEmployer;
 
     /**
      * Constructor configuration.
@@ -26,6 +28,14 @@ public class OtpGenerator {
                     @Override
                     public Integer load(String s) throws Exception {
                         return 0;
+                    }
+                });
+        otpCacheForEmployer = CacheBuilder.newBuilder()
+                .expireAfterWrite(EXPIRE_MIN, TimeUnit.MINUTES)
+                .build(new CacheLoader<String, String>() {
+                    @Override
+                    public String load(String s) throws Exception {
+                        return "0";
                     }
                 });
     }
@@ -45,6 +55,17 @@ public class OtpGenerator {
         return OTP;
     }
 
+    public String generateOTPForEmployer(String key)
+    {
+        int length = 8;
+        boolean useLetters = true;
+        boolean useNumbers = true;
+        String generatedString = RandomStringUtils.random(length, useLetters, useNumbers);
+        otpCacheForEmployer.put(key, generatedString);
+
+        return generatedString;
+    }
+
     /**
      * Method for getting OTP value by key.
      *
@@ -55,6 +76,10 @@ public class OtpGenerator {
     {
         return otpCache.getIfPresent(key);
     }
+    public String getOPTForEmpByKey(String key)
+    {
+        return otpCacheForEmployer.getIfPresent(key);
+    }
 
     /**
      * Method for removing key from cache.
@@ -63,5 +88,8 @@ public class OtpGenerator {
      */
     public void clearOTPFromCache(String key) {
         otpCache.invalidate(key);
+    }
+    public void clearOTPForEmpFromCache(String key) {
+        otpCacheForEmployer.invalidate(key);
     }
 }

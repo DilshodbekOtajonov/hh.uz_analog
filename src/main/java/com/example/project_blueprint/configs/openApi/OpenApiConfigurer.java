@@ -18,9 +18,9 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @OpenAPIDefinition(
-        info = @Info(title = "First Step Forward API", version = "v1",
-                description = "This API just for learning Spring boot features",
-                contact = @Contact(name = "PDP", url = "http://pdp.uz", email = "john.lgd65@gmail.com"),
+        info = @Info(title = "User-service", version = "v1",
+                description = "This API just for authorizing with otp",
+                contact = @Contact(name = "hh", url = "http://hh.uz", email = "ffreeze0109@gmail.com"),
                 license = @License(name = "Apache Foundation", url = "http://apache.org")
         ),
         security = {

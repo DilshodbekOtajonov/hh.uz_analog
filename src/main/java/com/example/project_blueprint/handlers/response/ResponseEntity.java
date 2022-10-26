@@ -1,4 +1,4 @@
-package com.example.project_blueprint.response;
+package com.example.project_blueprint.handlers.response;
 
 import lombok.Getter;
 import lombok.Setter;

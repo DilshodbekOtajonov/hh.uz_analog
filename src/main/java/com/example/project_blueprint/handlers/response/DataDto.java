@@ -1,4 +1,4 @@
-package com.example.project_blueprint.response;
+package com.example.project_blueprint.handlers.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;

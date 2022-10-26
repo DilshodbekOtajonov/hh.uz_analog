@@ -2,6 +2,7 @@ package com.example.project_blueprint.repository.auth;
 
 import com.example.project_blueprint.domains.auth.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -15,5 +16,6 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long>, GenericRepo{
 
+    @Query(value = " select  * from users us   where us.email =:email", nativeQuery = true)
     Optional<User> findByEmail(String email);
 }

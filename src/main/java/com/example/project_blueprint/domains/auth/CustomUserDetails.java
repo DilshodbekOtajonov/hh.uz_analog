@@ -44,8 +44,6 @@ public class CustomUserDetails implements UserDetails {
         this.mobilePhoneNumber = this.getMobilePhoneNumber();
         this.jobSearchArea = this.getJobSearchArea();
         this.socialNetworks = this.getSocialNetworks();
-        this.blocked = user.isBlocked();
-        this.active = user.isActive();
         processAuthorities(user);
     }
 

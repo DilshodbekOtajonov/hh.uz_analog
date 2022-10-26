@@ -38,9 +38,15 @@ public class SecurityConfigurer {
                         "/swagger-ui/**",
                         "/api-docs/**",
                         "/auth/register-with-otp",
+                        "/auth/employer/login",
+                        "/auth/employer/register",
+                        "/auth/employer/verify",
+                        "/auth/employer/get-password",
+                        "/auth/employer/set-password",
                         "/auth/verify"
                 ).permitAll()
-                .anyRequest().authenticated()
+                .anyRequest()
+                .authenticated()
         );
         http.sessionManagement(httpSecuritySessionManagementConfigurer ->
                 httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -48,20 +54,6 @@ public class SecurityConfigurer {
         return http.build();
 
     }
-
-
-//    @Bean
-//    public CorsFilter corsFilter() {
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        CorsConfiguration config = new CorsConfiguration();
-//        config.setAllowCredentials(true);
-//        config.addAllowedOrigin("*");
-//        config.addAllowedHeader("*");
-//        config.addAllowedMethod("*");
-//        source.registerCorsConfiguration("/**", config);
-//        return new CorsFilter(source);
-//    }
-
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {

@@ -20,8 +20,7 @@ public class UserDto extends GenericDto {
     private Long id;
 
     private String email;
+    private String fullName;
 
-//    private Set<AuthRole> roles;
 
-    private Boolean isActive;
 }

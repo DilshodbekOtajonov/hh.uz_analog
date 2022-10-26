@@ -17,11 +17,10 @@ import java.util.Set;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
 @Builder
 @Entity
 @Table(name = "users")
-public class User extends Auditable {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,20 +29,19 @@ public class User extends Auditable {
     @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(name = "password", length = 100)
-    @NotNull
     private String password;
 
     @Column(nullable = false)
-    @NotNull
     private String firstName;
 
     @Column(nullable = false)
-    @NotNull
     private String lastName;
 
-    @Column
-    private String fullName = firstName + " " + lastName;
+    public User() {
+        this.fullName = firstName+" "+lastName;
+    }
+
+    private String fullName;
 
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
@@ -54,12 +52,7 @@ public class User extends Auditable {
     )
     private Set<AuthRole> roles = new HashSet<>();
 
-    @Column
     private String phoneNumber;
-
-    @Column
     private String jobSearchArea;
-
-    @Column
     private String socialMedia;
 }

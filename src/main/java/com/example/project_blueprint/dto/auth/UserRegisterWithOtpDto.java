@@ -9,5 +9,5 @@ import javax.validation.constraints.Pattern;
  */
 
 
-public record UserRegisterWithOtpDto(@Pattern(regexp = "^[A-Z\\d._%+-]+@[A-Z\\d.-]+\\\\.[A-Z]{2,6}$") String email) {
+public record UserRegisterWithOtpDto(@Pattern(regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$") String email) {
 }

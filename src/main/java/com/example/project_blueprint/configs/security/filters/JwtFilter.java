@@ -36,6 +36,11 @@ public class JwtFilter extends OncePerRequestFilter {
             "/auth/login",
             "/auth/register",
             "/auth/register-with-otp",
+            "/auth/employer/login",
+            "/auth/employer/register",
+            "/auth/employer/verify",
+            "/auth/employer/get-password",
+            "/auth/employer/set-password",
             "/swagger-ui.*",
             "/v3/api-docs.*"
     );

@@ -21,7 +21,7 @@ public class AccessTokenService extends AbstractTokenService implements TokenSer
     private String accessTokenSecret="U0RGVyQ0MzUzZnNkRyUkXiQlXjxERkhHPE9ZVUslJF4+SkhGR0pUUllVJV4=";
 
     @Value("${jwt.access.token.expiry.adding.amount}")
-    private Integer amountToAdd = 2;
+    private Integer amountToAdd = 10;
 
     @Value("${jwt.access.token.expiry.time.unit}")
     private TemporalUnit unit= ChronoUnit.MINUTES;

@@ -10,7 +10,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "employer")
+@Table(name = "employers")
 public class Employer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +24,8 @@ public class Employer {
 
     @Column(nullable = false)
     private String name;
+
+    private String password;
 
     @Column(nullable = false)
     private String surName;

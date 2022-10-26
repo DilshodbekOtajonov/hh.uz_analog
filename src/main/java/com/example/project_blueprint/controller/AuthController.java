@@ -1,12 +1,13 @@
 package com.example.project_blueprint.controller;
 
-import com.example.project_blueprint.domains.auth.OTPEntity;
+import com.example.project_blueprint.domains.auth.AuthUser;
 import com.example.project_blueprint.dto.VerifyTokenRequestDTO;
 import com.example.project_blueprint.dto.auth.UserRegisterDto;
 import com.example.project_blueprint.dto.auth.UserRegisterWithOtpDto;
 import com.example.project_blueprint.dto.jwt.JWTToken;
-import com.example.project_blueprint.dto.jwt.JwtResponseDto;
 import com.example.project_blueprint.dto.user.UserDto;
+import com.example.project_blueprint.repository.auth.AuthUserRepository;
+import com.example.project_blueprint.service.auth.AuthUserService;
 import com.example.project_blueprint.service.auth.UserService;
 import com.example.project_blueprint.service.mail.MailService;
 import com.example.project_blueprint.service.mail.OTPService;
@@ -31,7 +32,8 @@ import javax.validation.Valid;
 public class AuthController {
     private final UserService service;
     private final OTPService otpService;
-    private MailService emailService;
+
+    private final AuthUserService authService;
 
     @PostMapping(value = "/login", produces = "application/json")
     public void login(@RequestBody String email) throws MessagingException {
@@ -58,9 +60,11 @@ public class AuthController {
         if (!isOtpValid) {
             return new org.springframework.http.ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
+        authService.create(verifyTokenRequest);
 
         String token = JwtUtils.accessTokenService.generateToken(email);
         JWTToken response = new JWTToken(token);
+
 
         return new org.springframework.http.ResponseEntity<>(response, HttpStatus.OK);
     }

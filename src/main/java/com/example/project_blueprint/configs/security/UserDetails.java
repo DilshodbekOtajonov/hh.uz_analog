@@ -48,12 +48,12 @@ public record UserDetails(User user) implements org.springframework.security.cor
 
     @Override
     public boolean isAccountNonExpired() {
-        return user().isActive();
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return user.isBlocked();
+        return true;
     }
 
     @Override
@@ -63,6 +63,6 @@ public record UserDetails(User user) implements org.springframework.security.cor
 
     @Override
     public boolean isEnabled() {
-        return user.isActive();
+        return true;
     }
 }

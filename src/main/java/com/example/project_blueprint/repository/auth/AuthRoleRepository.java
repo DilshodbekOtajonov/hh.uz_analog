@@ -7,8 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AuthRoleRepository extends JpaRepository<AuthRole, Long> {
-
-
-    @Query("select a from AuthRole a where a.code = ?1")
     AuthRole findByCode(String code);
 }
