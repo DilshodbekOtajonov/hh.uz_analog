@@ -37,12 +37,16 @@ public class SecurityConfigurer {
                         "/auth/register",
                         "/swagger-ui/**",
                         "/api-docs/**",
+                        "/auth/getAll",
+                        "/auth/update/**",
                         "/auth/register-with-otp",
                         "/auth/employer/login",
                         "/auth/employer/register",
                         "/auth/employer/verify",
                         "/auth/employer/get-password",
                         "/auth/employer/set-password",
+                        "/auth/employer/getAll",
+                        "/auth/employer/update/**",
                         "/auth/verify"
                 ).permitAll()
                 .anyRequest()

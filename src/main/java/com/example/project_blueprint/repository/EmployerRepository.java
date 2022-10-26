@@ -13,4 +13,9 @@ import java.util.Optional;
 public interface EmployerRepository extends JpaRepository<Employer, Long>, GenericRepo {
     @Query(value = " select  * from employers us   where us.email =:email", nativeQuery = true)
     Optional<Employer> findByEmail(String email);
+
+    @Query(value = " select  * from employers us   where us.email =:email and us.password =:password", nativeQuery = true)
+    Optional<Employer> findByEmailAndPassword(String email, String password);
+
+    Optional<Employer> findByResetToken(String resetToken);
 }

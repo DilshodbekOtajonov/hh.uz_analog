@@ -11,5 +11,6 @@ import lombok.*;
 @Setter
 @Builder
 public class EmployerDto extends GenericDto {
-    private Long id;
+    private String email;
+    private String companyName;
 }

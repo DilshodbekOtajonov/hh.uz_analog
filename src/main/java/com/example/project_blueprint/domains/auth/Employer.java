@@ -35,4 +35,7 @@ public class Employer {
 
     @Column(nullable = false)
     private String region;
+
+    @Column(name = "reset_token")
+    private String resetToken;
 }

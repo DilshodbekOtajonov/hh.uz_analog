@@ -16,6 +16,10 @@ public class PasswordResetToken {
 
     private String token;
 
+    public PasswordResetToken(String token) {
+        this.token = token;
+    }
+
     @OneToOne(targetEntity = Employer.class, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "employer_id")
     private Employer employer;

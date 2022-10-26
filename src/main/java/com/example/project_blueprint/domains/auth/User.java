@@ -1,10 +1,8 @@
 package com.example.project_blueprint.domains.auth;
 
-import com.example.project_blueprint.enums.auth.UserStatus;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,9 +16,10 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @Builder
+@NoArgsConstructor
 @Entity
 @Table(name = "users")
-public class User {
+public class User extends CustomUserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,20 +28,11 @@ public class User {
     @Column(unique = true, nullable = false)
     private String email;
 
-    private String password;
-
     @Column(nullable = false)
     private String firstName;
 
     @Column(nullable = false)
     private String lastName;
-
-    public User() {
-        this.fullName = firstName+" "+lastName;
-    }
-
-    private String fullName;
-
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(
@@ -51,8 +41,4 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
     )
     private Set<AuthRole> roles = new HashSet<>();
-
-    private String phoneNumber;
-    private String jobSearchArea;
-    private String socialMedia;
 }

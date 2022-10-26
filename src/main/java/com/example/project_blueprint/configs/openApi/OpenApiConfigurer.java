@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Configuration;
 @OpenAPIDefinition(
         info = @Info(title = "User-service", version = "v1",
                 description = "This API just for authorizing with otp",
-                contact = @Contact(name = "hh", url = "http://hh.uz", email = "ffreeze0109@gmail.com"),
+                contact = @Contact(name = "hh.uz", url = "http://hh.uz", email = "ffreeze0109@gmail.com"),
                 license = @License(name = "Apache Foundation", url = "http://apache.org")
         ),
         security = {

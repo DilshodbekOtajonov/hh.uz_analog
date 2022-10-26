@@ -3,6 +3,7 @@ package com.example.project_blueprint.service.auth;
 import com.example.project_blueprint.domains.auth.AuthUser;
 import com.example.project_blueprint.dto.VerifyTokenRequestDTO;
 import com.example.project_blueprint.dto.employer.auth.VerifyForEmpTokenRequestDTO;
+import com.example.project_blueprint.exceptions.UserNotActiveException;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -18,8 +19,7 @@ public class AuthUserService {
     private static final Integer EXPIRE_MIN = 5;
     private LoadingCache<String, Boolean> authUserCache;
 
-    public AuthUserService()
-    {
+    public AuthUserService() {
         super();
         authUserCache = CacheBuilder.newBuilder()
                 .expireAfterWrite(EXPIRE_MIN, TimeUnit.MINUTES)
@@ -31,8 +31,7 @@ public class AuthUserService {
                 });
     }
 
-    public AuthUser create(VerifyTokenRequestDTO dto)
-    {
+    public AuthUser create(VerifyTokenRequestDTO dto) {
         AuthUser key = AuthUser.builder()
                 .email(dto.getEmail())
                 .isActive(true)
@@ -41,8 +40,7 @@ public class AuthUserService {
         return key;
     }
 
-    public AuthUser createForEmp(VerifyForEmpTokenRequestDTO dto)
-    {
+    public AuthUser createForEmp(VerifyForEmpTokenRequestDTO dto) {
         AuthUser key = AuthUser.builder()
                 .email(dto.getEmail())
                 .isActive(true)
@@ -51,10 +49,10 @@ public class AuthUserService {
         return key;
     }
 
-    public AuthUser getAuthUserByEmail(String email)
-    {
-        if(authUserCache.getIfPresent(email)==false)
-            return new AuthUser();
+    public AuthUser getAuthUserByEmail(String email) {
+        if (!authUserCache.getIfPresent(email)) {
+            new UserNotActiveException("user not active by email %s".formatted(email));
+        }
         return AuthUser.builder()
                 .email(email)
                 .isActive(true)
@@ -65,12 +63,10 @@ public class AuthUserService {
         authUserCache.invalidate(email);
     }
 
-    public Boolean validateAuthUser(AuthUser key)
-    {
+    public Boolean validateAuthUser(AuthUser key) {
         // get AuthUser from cache
         Boolean cacheAuthUser = getAuthUserByEmail(key.getEmail()).getIsActive();
-        if (cacheAuthUser!=null && cacheAuthUser.equals(true))
-        {
+        if (cacheAuthUser != null && cacheAuthUser.equals(true)) {
             clearAuthUserFromCache(key.getEmail());
             return true;
         }

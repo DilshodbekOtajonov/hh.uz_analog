@@ -18,12 +18,13 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class CustomUserDetails implements UserDetails {
 
     private Long id;
     private AuthRole role;
+
     private String firstName;
+
     private String lastName;
     private String fullName;
     private String email;
@@ -31,25 +32,20 @@ public class CustomUserDetails implements UserDetails {
     private String mobilePhoneNumber;
     private String jobSearchArea;
     private String socialNetworks;
-    private boolean blocked;
     private boolean active;
     private Set<GrantedAuthority> authorities;
 
     public CustomUserDetails(User user) {
         this.id = user.getId();
         this.role = this.getRole();
-        this.fullName = this.getFirstName()+" "+this.getLastName();
+        this.fullName = this.getFirstName() + " " + this.getLastName();
         this.email = this.getEmail();
         this.password = this.getPassword();
         this.mobilePhoneNumber = this.getMobilePhoneNumber();
         this.jobSearchArea = this.getJobSearchArea();
         this.socialNetworks = this.getSocialNetworks();
+        this.active = this.isActive();
         processAuthorities(user);
-    }
-
-    public void getFullName(User user)
-    {
-            System.out.println(this.getFirstName() + " " + this.getLastName());
     }
 
     private void processAuthorities(User user) {
@@ -84,7 +80,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return !this.blocked;
+        return this.active;
     }
 
     @Override

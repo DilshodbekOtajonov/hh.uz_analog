@@ -6,19 +6,21 @@ import com.example.project_blueprint.domains.auth.CustomUserDetails;
 
 import com.example.project_blueprint.dto.auth.UserRegisterDto;
 import com.example.project_blueprint.dto.auth.UserRegisterWithOtpDto;
-import com.example.project_blueprint.dto.jwt.JWTToken;
 import com.example.project_blueprint.dto.user.UserDto;
+import com.example.project_blueprint.dto.user.UserUpdateDto;
 import com.example.project_blueprint.exceptions.UserNotActiveException;
+import com.example.project_blueprint.handlers.response.AppErrorDto;
+import com.example.project_blueprint.handlers.response.DataDto;
 import com.example.project_blueprint.handlers.response.ResponseEntity;
-
 import com.example.project_blueprint.domains.auth.User;
 import com.example.project_blueprint.exceptions.UserNotFoundException;
 import com.example.project_blueprint.mappers.auth.UserMapper;
-import com.example.project_blueprint.repository.auth.AuthUserRepository;
 import com.example.project_blueprint.repository.auth.UserRepository;
 import com.example.project_blueprint.service.mail.OTPService;
 import com.example.project_blueprint.utils.jwt.JwtUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -43,7 +45,6 @@ public class UserService
     private final OTPService otpService;
     private final AuthUserService authService;
     private final UserRepository repository;
-    private final AuthUserRepository authRepository;
     private final UserMapper mapper;
 
     public ResponseEntity<List<UserDto>> getAll() {
@@ -83,7 +84,7 @@ public class UserService
 
     public UserDto register(UserRegisterDto dto) {
         AuthUser authUser = authService.getAuthUserByEmail(dto.email());
-        if (authUser.getIsActive()==false) {
+        if (authUser.getIsActive()!=true) {
             new UserNotActiveException("user not active by email %s".formatted(dto.email()));
         }
         User user = User.builder()
@@ -93,5 +94,21 @@ public class UserService
                 .build();
         repository.save(user);
         return mapper.fromUser(user);
+    }
+
+    public ResponseEntity<DataDto<Boolean>> update(UserUpdateDto updateDto) {
+        Optional<User> user = repository.findById(updateDto.getId());
+        if (user.isEmpty()) {
+            return new ResponseEntity<>(new DataDto<>(new AppErrorDto(HttpStatus.NOT_FOUND, "user not found")));
+        }
+        User authUser = user.get();
+        authUser.setEmail(updateDto.getEmail());
+        authUser.setFullName(updateDto.getFullName());
+        authUser.setPassword(updateDto.getPassword());
+        authUser.setMobilePhoneNumber(updateDto.getPhoneNumber());
+        authUser.setJobSearchArea(updateDto.getJobSearchArea());
+        authUser.setSocialNetworks(updateDto.getSocialMedia());
+        repository.save(authUser);
+        return new ResponseEntity<>(new DataDto<>(true));
     }
 }
