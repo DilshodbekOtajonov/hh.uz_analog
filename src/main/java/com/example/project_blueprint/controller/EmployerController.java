@@ -1,18 +1,13 @@
 package com.example.project_blueprint.controller;
 
-import com.example.project_blueprint.domains.auth.Employer;
+import com.example.project_blueprint.dto.auth.LoginRequestDto;
 import com.example.project_blueprint.dto.employer.EmployerDto;
 import com.example.project_blueprint.dto.employer.EmployerUpdateDto;
 import com.example.project_blueprint.dto.employer.auth.*;
 import com.example.project_blueprint.dto.jwt.JWTToken;
-import com.example.project_blueprint.dto.user.UserDto;
-import com.example.project_blueprint.dto.user.UserUpdateDto;
-import com.example.project_blueprint.handlers.ResponseMessage;
+import com.example.project_blueprint.dto.jwt.JwtResponseDto;
 import com.example.project_blueprint.handlers.response.DataDto;
-import com.example.project_blueprint.repository.auth.AuthUserRepository;
-import com.example.project_blueprint.service.auth.AuthUserService;
 import com.example.project_blueprint.service.auth.EmployerService;
-import com.example.project_blueprint.service.mail.MailServiceImpl;
 import com.example.project_blueprint.service.mail.OTPService;
 import com.example.project_blueprint.utils.jwt.JwtUtils;
 import lombok.RequiredArgsConstructor;
@@ -29,12 +24,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EmployerController {
     private final EmployerService service;
-    private final AuthUserService authService;
     private final OTPService otpService;
 
     @PostMapping(value = "/login", produces = "application/json")
-    public void login(@RequestBody EmpLoginRequestDto dto) {
-        service.login(dto.email(), dto.password());
+    public ResponseEntity<JwtResponseDto> login(@RequestBody EmpLoginRequestDto loginRequest) {
+        return ResponseEntity.ok(service.login(loginRequest));
     }
 
     @PostMapping("/register")
@@ -43,22 +37,9 @@ public class EmployerController {
     }
 
     @PostMapping(value = "/verify")
-    public org.springframework.http.ResponseEntity<JWTToken> verifyOtp(@Valid @RequestBody VerifyForEmpTokenRequestDTO verifyTokenRequest)
+    public ResponseEntity<JWTToken> verifyOtp(@Valid @RequestBody VerifyForEmpTokenRequestDTO verifyTokenRequest)
     {
-        String email = verifyTokenRequest.getEmail();
-        String otp = verifyTokenRequest.getOtp();
-
-        boolean isOtpValid = otpService.validateOTPForEmp(email, otp);
-        if (!isOtpValid) {
-            return new org.springframework.http.ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-        authService.createForEmp(verifyTokenRequest);
-
-        String token = JwtUtils.accessTokenService.generateToken(email);
-        JWTToken response = new JWTToken(token);
-
-
-        return new org.springframework.http.ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(service.verifyOtp(verifyTokenRequest), HttpStatus.OK);
     }
 
     //forgot password

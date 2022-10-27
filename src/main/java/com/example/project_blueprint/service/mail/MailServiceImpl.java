@@ -19,23 +19,22 @@ import java.util.stream.Collectors;
 public class MailServiceImpl implements MailService {
     private final JavaMailSender mailSender;
 
-
-    public Boolean sendSimpleMessage(EmailDTO emailDTO)
-    {
+    @Async
+    public void sendSimpleMessage(EmailDTO emailDTO) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(emailDTO.getRecipients().stream().collect(Collectors.joining(",")));
         mailMessage.setSubject(emailDTO.getSubject());
         mailMessage.setText(emailDTO.getBody());
 
-        Boolean isSent = false;
-        try
-        {
-            mailSender.send(mailMessage);
-            isSent = true;
-        }
-        catch (Exception e) {
-        }
-        return isSent;
+        mailSender.send(mailMessage);
+//        Boolean isSent = false;
+//        try {
+//            mailSender.send(mailMessage);
+//            isSent = true;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return isSent;
     }
 
     @Async

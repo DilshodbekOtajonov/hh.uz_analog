@@ -11,7 +11,7 @@ import javax.transaction.Transactional;
 @Service
 @Transactional
 public interface MailService {
-    Boolean sendSimpleMessage(EmailDTO emailDTO);
+    void sendSimpleMessage(EmailDTO emailDTO);
 
     void sendEmail(SimpleMailMessage email);
 }

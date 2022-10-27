@@ -38,4 +38,20 @@ public class Employer {
 
     @Column(name = "reset_token")
     private String resetToken;
-}
+
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Employer.EmployerStatus status = Employer.EmployerStatus.IN_ACTIVE;
+
+    public enum EmployerStatus {
+        ACTIVE, IN_ACTIVE;
+
+        public static Employer.EmployerStatus getByName(String employerStatusName) {
+            for (Employer.EmployerStatus employerStatus : values()) {
+                if (employerStatus.name().equalsIgnoreCase(employerStatusName))
+                    return employerStatus;
+            }
+            return IN_ACTIVE;
+        }
+    }}

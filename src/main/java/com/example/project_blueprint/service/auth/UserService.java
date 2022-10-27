@@ -1,11 +1,12 @@
 package com.example.project_blueprint.service.auth;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.example.project_blueprint.domains.auth.AuthUser;
 import com.example.project_blueprint.domains.auth.CustomUserDetails;
 
+import com.example.project_blueprint.dto.VerifyTokenRequestDTO;
+import com.example.project_blueprint.dto.auth.LoginRequestDto;
 import com.example.project_blueprint.dto.auth.UserRegisterDto;
-import com.example.project_blueprint.dto.auth.UserRegisterWithOtpDto;
+import com.example.project_blueprint.dto.jwt.JWTToken;
 import com.example.project_blueprint.dto.user.UserDto;
 import com.example.project_blueprint.dto.user.UserUpdateDto;
 import com.example.project_blueprint.exceptions.UserNotActiveException;
@@ -20,7 +21,6 @@ import com.example.project_blueprint.service.mail.OTPService;
 import com.example.project_blueprint.utils.jwt.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -43,13 +43,17 @@ import java.util.Optional;
 public class UserService
         implements UserDetailsService {
     private final OTPService otpService;
-    private final AuthUserService authService;
     private final UserRepository repository;
     private final UserMapper mapper;
 
     public ResponseEntity<List<UserDto>> getAll() {
         List<UserDto> userDtos = new ArrayList<>();
         List<User> authUsers = repository.findAll();
+        for (User authUser : authUsers) {
+                UserDto userDto = mapper.fromUser(authUser);
+                //userDto.setAuthRole(authUser.getRole());
+                userDtos.add(userDto);
+        }
         return new ResponseEntity<>(userDtos);
     }
 
@@ -68,29 +72,33 @@ public class UserService
     }
 
 
-    public void login(String email) {
-        Optional<User> byEmail = repository.findByEmail(email);
+    public void login(LoginRequestDto dto) {
+        Optional<User> byEmail = repository.findByEmail(dto.email());
         if (byEmail.isEmpty()) {
             User user = repository.save(User.builder()
-                    .email(email)
+                    .email(dto.email())
                     .build());
         }
-        otpService.generateOtp(email);
-    }
-
-    public Boolean registerWithOtp(UserRegisterWithOtpDto dto) {
-        return otpService.generateOtp(dto.email());
+        if (byEmail.get().getStatus().equals(User.UserStatus.IN_ACTIVE)) {
+            otpService.generateOtp(dto.email());
+            throw new UserNotActiveException("Email not active. Otp sent to email %s".formatted(dto.email()));
+        }
     }
 
     public UserDto register(UserRegisterDto dto) {
-        AuthUser authUser = authService.getAuthUserByEmail(dto.email());
-        if (authUser.getIsActive()!=true) {
-            new UserNotActiveException("user not active by email %s".formatted(dto.email()));
+        Optional<User> authUser = repository.findByEmail(dto.email());
+        if (!authUser.isEmpty()) {
+            if (authUser.get().getStatus().equals(User.UserStatus.IN_ACTIVE)) {
+                otpService.generateOtp(dto.email());
+                throw new UserNotActiveException("Email not active. Otp sent to email %s".formatted(dto.email()));
+            }
+            return mapper.fromUser(authUser.get());
         }
         User user = User.builder()
                 .email(dto.email())
                 .firstName(dto.firstName())
                 .lastName(dto.lastName())
+                .fullName(dto.firstName()+" "+dto.lastName())
                 .build();
         repository.save(user);
         return mapper.fromUser(user);
@@ -110,5 +118,26 @@ public class UserService
         authUser.setSocialNetworks(updateDto.getSocialMedia());
         repository.save(authUser);
         return new ResponseEntity<>(new DataDto<>(true));
+    }
+
+    public JWTToken verifyOtp(VerifyTokenRequestDTO verifyTokenRequest) {
+        String email = verifyTokenRequest.getEmail();
+        Integer otp = verifyTokenRequest.getOtp();
+
+        boolean isOtpValid = otpService.validateOTP(email, otp);
+        if (!isOtpValid) {
+            new org.springframework.http.ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        Optional<User> authUser = repository.findByEmail(verifyTokenRequest.getEmail());
+        if (!authUser.isEmpty()) {
+            if (authUser.get().getStatus().equals(User.UserStatus.IN_ACTIVE)) {
+                otpService.generateOtp(verifyTokenRequest.getEmail());
+                throw new UserNotActiveException("Email not active. Otp sent to email %s".formatted(verifyTokenRequest.getEmail()));
+            }
+            authUser.get().setStatus(User.UserStatus.ACTIVE);
+        }
+        String token = JwtUtils.accessTokenService.generateToken(email);
+        JWTToken response = new JWTToken(token);
+        return response;
     }
 }

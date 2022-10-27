@@ -1,5 +1,6 @@
 package com.example.project_blueprint.dto.user;
 
+import com.example.project_blueprint.domains.auth.User;
 import com.example.project_blueprint.dto.GenericDto;
 import lombok.*;
 
@@ -20,6 +21,8 @@ public class UserDto extends GenericDto {
     private Long id;
     private String email;
     private String fullName;
+
+    private User.UserStatus status;
 
 
 }

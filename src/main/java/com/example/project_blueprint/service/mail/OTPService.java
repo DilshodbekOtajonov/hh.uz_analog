@@ -1,6 +1,7 @@
 package com.example.project_blueprint.service.mail;
 
 import com.example.project_blueprint.dto.EmailDTO;
+import com.example.project_blueprint.exceptions.OtpNotValidException;
 import com.example.project_blueprint.service.auth.UserService;
 import com.google.common.cache.LoadingCache;
 import lombok.RequiredArgsConstructor;
@@ -16,13 +17,13 @@ public class OTPService {
     private final OtpGenerator otpGenerator;
     private final MailServiceImpl emailService;
 
-    public Boolean generateOtp(String userEmail)
+    public void generateOtp(String userEmail)
     {
         // generate otp
         Integer otpValue = otpGenerator.generateOTP(userEmail);
         if (otpValue == -1)
         {
-            return  false;
+            new OtpNotValidException("Not valid Otp");
         }
 
 
@@ -38,7 +39,7 @@ public class OTPService {
         emailDTO.setRecipients(recipients);
 
         // send generated e-mail
-        return emailService.sendSimpleMessage(emailDTO);
+        emailService.sendSimpleMessage(emailDTO);
     }
 
     public Boolean validateOTP(String key, Integer otpNumber)
@@ -53,13 +54,13 @@ public class OTPService {
         return false;
     }
 
-    public Boolean generateOtpForEmp(String userEmail)
+    public void generateOtpForEmp(String userEmail)
     {
         // generate otp
         String otpValue = otpGenerator.generateOTPForEmployer(userEmail);
         if (otpValue.length() <8)
         {
-            return  false;
+            new OtpNotValidException("Not valid Otp");
         }
 
 
@@ -75,7 +76,7 @@ public class OTPService {
         emailDTO.setRecipients(recipients);
 
         // send generated e-mail
-        return emailService.sendSimpleMessage(emailDTO);
+        emailService.sendSimpleMessage(emailDTO);
     }
 
     public Boolean validateOTPForEmp(String key, String otp)
@@ -90,13 +91,13 @@ public class OTPService {
         return false;
     }
 
-    public Boolean generateUrl(String userEmail)
+    public void generateUrl(String userEmail)
     {
         // generate otp
         Integer otpValue = otpGenerator.generateOTP(userEmail);
         if (otpValue == -1)
         {
-            return  false;
+            new OtpNotValidException("Otp not valid");
         }
 
 
@@ -112,6 +113,6 @@ public class OTPService {
         emailDTO.setRecipients(recipients);
 
         // send generated e-mail
-        return emailService.sendSimpleMessage(emailDTO);
+        emailService.sendSimpleMessage(emailDTO);
     }
 }
