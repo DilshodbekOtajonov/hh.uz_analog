@@ -44,7 +44,7 @@ public class SecurityConfigurer {
                         "/auth/employer/register",
                         "/auth/employer/verify",
                         "/auth/employer/get-password",
-                        "/auth/employer/set-password",
+                        "/auth/employer/set-password/**",
                         "/auth/employer/getAll",
                         "/auth/employer/update/**",
                         "/auth/verify"

@@ -17,7 +17,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @Builder
-//@NoArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "users")
 public class User extends CustomUserDetails {
@@ -63,7 +63,8 @@ public class User extends CustomUserDetails {
         }
     }
 
-    public User() {
-        this.fullName = this.firstName+" "+this.lastName;
-    }
+    private String password;
+    private String mobilePhoneNumber;
+    private String jobSearchArea;
+    private String socialNetworks;
 }

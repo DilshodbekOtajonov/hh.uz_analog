@@ -26,14 +26,13 @@ public class MailServiceImpl implements MailService {
         mailMessage.setSubject(emailDTO.getSubject());
         mailMessage.setText(emailDTO.getBody());
 
-        mailSender.send(mailMessage);
 //        Boolean isSent = false;
-//        try {
-//            mailSender.send(mailMessage);
+        try {
+            mailSender.send(mailMessage);
 //            isSent = true;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 //        return isSent;
     }
 

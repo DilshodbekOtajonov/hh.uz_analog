@@ -32,7 +32,7 @@ public class CustomUserDetails implements UserDetails {
     private String mobilePhoneNumber;
     private String jobSearchArea;
     private String socialNetworks;
-    private boolean active;
+    private User.UserStatus status;
     private Set<GrantedAuthority> authorities;
 
     public CustomUserDetails(User user) {
@@ -44,7 +44,7 @@ public class CustomUserDetails implements UserDetails {
         this.mobilePhoneNumber = this.getMobilePhoneNumber();
         this.jobSearchArea = this.getJobSearchArea();
         this.socialNetworks = this.getSocialNetworks();
-        this.active = this.isActive();
+        this.status = this.getStatus();
         processAuthorities(user);
     }
 
@@ -80,7 +80,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return this.active;
+        return this.status.equals(User.UserStatus.ACTIVE);
     }
 
     @Override
@@ -90,6 +90,6 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return !this.active;
+        return !this.status.equals(User.UserStatus.ACTIVE);
     }
 }

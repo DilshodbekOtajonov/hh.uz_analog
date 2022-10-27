@@ -90,7 +90,7 @@ public class UserService
         if (!authUser.isEmpty()) {
             if (authUser.get().getStatus().equals(User.UserStatus.IN_ACTIVE)) {
                 otpService.generateOtp(dto.email());
-                throw new UserNotActiveException("Email not active. Otp sent to email %s".formatted(dto.email()));
+                new UserNotActiveException("Email not active. Otp sent to email %s".formatted(dto.email()));
             }
             return mapper.fromUser(authUser.get());
         }
@@ -101,6 +101,7 @@ public class UserService
                 .fullName(dto.firstName()+" "+dto.lastName())
                 .build();
         repository.save(user);
+        otpService.generateOtp(dto.email());
         return mapper.fromUser(user);
     }
 
@@ -130,10 +131,6 @@ public class UserService
         }
         Optional<User> authUser = repository.findByEmail(verifyTokenRequest.getEmail());
         if (!authUser.isEmpty()) {
-            if (authUser.get().getStatus().equals(User.UserStatus.IN_ACTIVE)) {
-                otpService.generateOtp(verifyTokenRequest.getEmail());
-                throw new UserNotActiveException("Email not active. Otp sent to email %s".formatted(verifyTokenRequest.getEmail()));
-            }
             authUser.get().setStatus(User.UserStatus.ACTIVE);
         }
         String token = JwtUtils.accessTokenService.generateToken(email);

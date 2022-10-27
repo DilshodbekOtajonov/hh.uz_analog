@@ -44,7 +44,7 @@ public class EmployerController {
 
     //forgot password
     @PostMapping("/get-password")
-    public ResponseEntity<PasswordResetToken> getPassword(@Valid @RequestBody HttpServletRequest request, String email) {
+    public ResponseEntity<PasswordResetToken> getPassword(HttpServletRequest request, @Valid @RequestBody EmpGetPasswordDto email) {
         return ResponseEntity.ok(service.getPassword(request, email));
     }
 

@@ -60,7 +60,7 @@ public class OTPService {
         String otpValue = otpGenerator.generateOTPForEmployer(userEmail);
         if (otpValue.length() <8)
         {
-            new OtpNotValidException("Not valid Otp");
+           throw new OtpNotValidException("Not valid Otp");
         }
 
 

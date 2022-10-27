@@ -82,11 +82,11 @@ public class EmployerService implements UserDetailsService {
         return new EmployerDetails(employer);
     }
 
-    private String verifyToken(String token) {
-        DecodedJWT decodedJWT = JwtUtils.accessTokenService.getVerifier().verify(token);
-        String email = decodedJWT.getSubject();
-        return email;
-    }
+//    private String verifyToken(String token) {
+//        DecodedJWT decodedJWT = JwtUtils.accessTokenService.getVerifier().verify(token);
+//        String email = decodedJWT.getSubject();
+//        return email;
+//    }
 
     public JwtResponseDto login(EmpLoginRequestDto request) {
         Authentication authentication = authenticationManager.authenticate(
@@ -98,24 +98,28 @@ public class EmployerService implements UserDetailsService {
     }
 
     public EmployerDto register(EmployerRegisterDto dto) {
-        Employer employer = repository.save(Employer.builder()
+        Optional<User> byEmail = userRepository.findByEmail(dto.email());
+        if (!byEmail.isEmpty()) {
+            throw new CommonUserException("Already excisting email in job seekers category. Not allowed email %s".formatted(dto.email()));
+        }
+        Optional<Employer> the_employer = repository.findByEmail(dto.email());
+        if (!the_employer.isEmpty()) {
+            if (the_employer.get().getStatus().equals(Employer.EmployerStatus.IN_ACTIVE)) {
+                otpService.generateOtpForEmp(dto.email());
+                new UserNotActiveException("Email not active. Otp sent to email %s".formatted(dto.email()));
+            }
+            return mapper.fromEmployer(the_employer.get());
+        }
+        Employer employer = Employer.builder()
                 .email(dto.email())
                 .name(dto.name())
                 .surName(dto.surName())
                 .companyName(dto.companyName())
                 .phoneNumber(dto.phoneNumber())
                 .region(dto.region())
-                .build());
+                .build();
         repository.save(employer);
-        Optional<User> byEmail = userRepository.findByEmail(dto.email());
-        if (!byEmail.isEmpty()) {
-            throw new CommonUserException("Already excisting in job seekers category email %s".formatted(dto.email()));
-        }
-        Employer the_employer = repository.findByEmail(dto.email()).get();
-        if (the_employer.getStatus().equals(Employer.EmployerStatus.IN_ACTIVE)) {
-            otpService.generateOtpForEmp(dto.email());
-            throw new UserNotActiveException("Email not active. Otp sent to email %s".formatted(dto.email()));
-        }
+        otpService.generateOtpForEmp(dto.email());
         return mapper.fromEmployer(employer);
     }
 
@@ -146,32 +150,32 @@ public class EmployerService implements UserDetailsService {
     }
 
 
-    public PasswordResetToken getPassword(HttpServletRequest request, String email) {
+    public PasswordResetToken getPassword(HttpServletRequest request, EmpGetPasswordDto email) {
         // Lookup employer in database by e-mail
-        Optional<Employer> optional = repository.findByEmail(email);
+        Optional<Employer> optional = repository.findByEmail(email.email());
 
-        if (!optional.isPresent()) {
-           throw new UserNotFoundException("Could not find any employer with the email " + email);
+        if (optional.isEmpty()) {
+            throw new UserNotFoundException("Could not find any employer with the email " + email.email());
         }
 
         // Generate random 36-character string token for reset password
-        Employer employer = optional.get();
-        String token = JwtUtils.accessTokenService.generateToken(email);
+        //Employer employer = optional.get();
+        String token = JwtUtils.accessTokenService.generateToken(email.email());
         PasswordResetToken response = new PasswordResetToken(token);
-        employer.setResetToken(token);
+        optional.get().setResetToken(token);
 
         // Save token to database
-        repository.save(employer);
+      //  repository.save(employer);
 
         String appUrl = request.getScheme() + "://" + request.getServerName();
 
         // Email message
         SimpleMailMessage passwordResetEmail = new SimpleMailMessage();
         passwordResetEmail.setFrom("ffreeze0109@gmail.com");
-        passwordResetEmail.setTo(employer.getEmail());
+        passwordResetEmail.setTo(optional.get().getEmail());
         passwordResetEmail.setSubject("Password Reset Request");
         passwordResetEmail.setText("To reset your password, click the link below:\n" + appUrl
-                + "/reset?token=" + employer.getResetToken());
+                + "/set-password?token=" + optional.get().getResetToken());
 
         emailService.sendEmail(passwordResetEmail);
 
@@ -179,12 +183,12 @@ public class EmployerService implements UserDetailsService {
     }
 
     public void setPassword(ResetPasswordRequest request) {
-        Optional<Employer> optional = repository.findByEmail(verifyToken(request.getToken()));
+        Optional<Employer> optional = repository.findByEmail(JwtUtils.accessTokenService.getSubject(request.getToken()));
 
         if (!optional.isPresent()) {
-           throw new UserNotFoundException("Could not find any employer with the email " + verifyToken(request.getToken()));
+            throw new UserNotFoundException("Could not find any employer with the email " + JwtUtils.accessTokenService.getSubject(request.getToken()));
         }
-        
+
         optional.get().setPassword(request.getPassword());
     }
 
@@ -214,11 +218,12 @@ public class EmployerService implements UserDetailsService {
             new org.springframework.http.ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         Optional<Employer> byEmail = repository.findByEmail(verifyTokenRequest.getEmail());
-        if (byEmail.isEmpty()){
+        if (byEmail.isEmpty()) {
             Employer employer = Employer.builder()
                     .email(verifyTokenRequest.getEmail())
                     .build();
         }
+        byEmail.get().setStatus(Employer.EmployerStatus.ACTIVE);
         String token = JwtUtils.accessTokenService.generateToken(email);
         JWTToken response = new JWTToken(token);
         return response;

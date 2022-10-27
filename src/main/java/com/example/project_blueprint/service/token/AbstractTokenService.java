@@ -16,7 +16,7 @@ import java.util.function.Function;
  * Project_Blueprint/IntelliJ IDEA
  */
 public class AbstractTokenService {
-    private static final SignatureAlgorithm algorithm = SignatureAlgorithm.HS512;
+    private static final SignatureAlgorithm algorithm = SignatureAlgorithm.HS256;
 
 
     protected String getSubject(String token, String secret) {

@@ -9,5 +9,5 @@ import javax.validation.constraints.Pattern;
  */
 
 
-public record EmpGetPasswordDto(@Pattern(regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$") String password) {
+public record EmpGetPasswordDto(@Pattern(regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$") String email) {
 }

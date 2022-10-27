@@ -42,13 +42,13 @@ public class Employer {
     @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Employer.EmployerStatus status = Employer.EmployerStatus.IN_ACTIVE;
+    private EmployerStatus status = EmployerStatus.IN_ACTIVE;
 
     public enum EmployerStatus {
         ACTIVE, IN_ACTIVE;
 
-        public static Employer.EmployerStatus getByName(String employerStatusName) {
-            for (Employer.EmployerStatus employerStatus : values()) {
+        public static EmployerStatus getByName(String employerStatusName) {
+            for (EmployerStatus employerStatus : values()) {
                 if (employerStatus.name().equalsIgnoreCase(employerStatusName))
                     return employerStatus;
             }
