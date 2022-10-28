@@ -14,7 +14,7 @@ import java.util.Random;
 @SpringBootApplication
 @EnableAsync
 @EnableScheduling
-@EnableCaching
+@EnableCaching(proxyTargetClass = true)
 public class ProjectBlueprintApplication {
 
     public static void main(String[] args) {

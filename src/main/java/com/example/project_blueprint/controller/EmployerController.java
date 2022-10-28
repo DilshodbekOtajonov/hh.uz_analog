@@ -27,8 +27,9 @@ public class EmployerController {
     private final OTPService otpService;
 
     @PostMapping(value = "/login", produces = "application/json")
-    public ResponseEntity<JwtResponseDto> login(@RequestBody EmpLoginRequestDto loginRequest) {
-        return ResponseEntity.ok(service.login(loginRequest));
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void login(@RequestBody EmpLoginRequestDto loginRequest) {
+        service.login(loginRequest);
     }
 
     @PostMapping("/register")

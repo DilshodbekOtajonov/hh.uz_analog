@@ -90,29 +90,4 @@ public class OTPService {
         }
         return false;
     }
-
-    public void generateUrl(String userEmail)
-    {
-        // generate otp
-        Integer otpValue = otpGenerator.generateOTP(userEmail);
-        if (otpValue == -1)
-        {
-            new OtpNotValidException("Otp not valid");
-        }
-
-
-        // fetch user e-mail from database
-        // String userEmail = userService.findEmailByUsername(userEmail);
-        List<String> recipients = new ArrayList<>();
-        recipients.add(userEmail);
-
-        // generate emailDTO object
-        EmailDTO emailDTO = new EmailDTO();
-        emailDTO.setSubject("Spring Boot OTP Password.");
-        emailDTO.setBody("OTP Password: " + otpValue);
-        emailDTO.setRecipients(recipients);
-
-        // send generated e-mail
-        emailService.sendSimpleMessage(emailDTO);
-    }
 }

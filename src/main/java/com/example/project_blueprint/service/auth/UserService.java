@@ -65,13 +65,6 @@ public class UserService
         return new CustomUserDetails(user);
     }
 
-    private UserDetails verifyToken(String token) {
-        DecodedJWT decodedJWT = JwtUtils.accessTokenService.getVerifier().verify(token);
-        String email = decodedJWT.getSubject();
-        return loadUserByUsername(email);
-    }
-
-
     public void login(LoginRequestDto dto) {
         Optional<User> byEmail = repository.findByEmail(dto.email());
         if (byEmail.isEmpty()) {

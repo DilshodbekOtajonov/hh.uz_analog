@@ -1,18 +1,13 @@
 package com.example.project_blueprint.service.auth;
 
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.project_blueprint.configs.encryption.Encoders;
 import com.example.project_blueprint.configs.security.EmployerDetails;
-import com.example.project_blueprint.configs.security.UserDetails;
 import com.example.project_blueprint.domains.auth.Employer;
 import com.example.project_blueprint.domains.auth.User;
-import com.example.project_blueprint.dto.auth.LoginRequestDto;
 import com.example.project_blueprint.dto.employer.EmployerUpdateDto;
 import com.example.project_blueprint.dto.employer.auth.*;
 import com.example.project_blueprint.dto.employer.EmployerDto;
 import com.example.project_blueprint.dto.jwt.JWTToken;
-import com.example.project_blueprint.dto.jwt.JwtResponseDto;
-import com.example.project_blueprint.dto.user.UserDto;
 import com.example.project_blueprint.exceptions.CommonUserException;
 import com.example.project_blueprint.exceptions.UserNotActiveException;
 import com.example.project_blueprint.exceptions.UserNotFoundException;
@@ -26,15 +21,10 @@ import com.example.project_blueprint.service.mail.MailServiceImpl;
 import com.example.project_blueprint.service.mail.OTPService;
 import com.example.project_blueprint.utils.jwt.JwtUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -43,6 +33,7 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class EmployerService implements UserDetailsService {
     private final OTPService otpService;
     private final MailServiceImpl emailService;
@@ -50,18 +41,6 @@ public class EmployerService implements UserDetailsService {
     private final UserRepository userRepository;
     private final EmployerMapper mapper;
     private final Encoders encoders;
-
-    private final AuthenticationManager authenticationManager;
-
-    public EmployerService(OTPService otpService, MailServiceImpl emailService, EmployerRepository repository, UserRepository userRepository, EmployerMapper mapper, Encoders encoders, @Lazy AuthenticationManager authenticationManager) {
-        this.otpService = otpService;
-        this.emailService = emailService;
-        this.repository = repository;
-        this.userRepository = userRepository;
-        this.mapper = mapper;
-        this.encoders = encoders;
-        this.authenticationManager = authenticationManager;
-    }
 
     public ResponseEntity<List<EmployerDto>> getAll() {
         List<EmployerDto> employerDtos = new ArrayList<>();
@@ -88,13 +67,14 @@ public class EmployerService implements UserDetailsService {
 //        return email;
 //    }
 
-    public JwtResponseDto login(EmpLoginRequestDto request) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.email(), request.password()));
-        Employer employer = (Employer) authentication.getPrincipal();
-        String accessToken = JwtUtils.accessTokenService.generateToken(employer.getEmail());
-        String refreshToken = JwtUtils.refreshTokenService.generateToken(employer.getEmail());
-        return new JwtResponseDto(accessToken, refreshToken, "Bearer");
+    public void login(EmpLoginRequestDto dto) {
+        Optional<Employer> byEmail = repository.findByEmailAndPassword(dto.email(), dto.password());
+        if (byEmail.isEmpty()) {
+            Employer employer = repository.save(Employer.builder()
+                    .email(dto.email())
+                    .build());
+            throw new UserNotFoundException("Employer not found with email %s".formatted(dto.email()));
+        }
     }
 
     public EmployerDto register(EmployerRegisterDto dto) {
@@ -150,17 +130,17 @@ public class EmployerService implements UserDetailsService {
     }
 
 
-    public PasswordResetToken getPassword(HttpServletRequest request, EmpGetPasswordDto email) {
+    public PasswordResetToken getPassword(HttpServletRequest request, EmpGetPasswordDto dto) {
         // Lookup employer in database by e-mail
-        Optional<Employer> optional = repository.findByEmail(email.email());
+        Optional<Employer> optional = repository.findByEmail(dto.email());
 
         if (optional.isEmpty()) {
-            throw new UserNotFoundException("Could not find any employer with the email " + email.email());
+            throw new UserNotFoundException("Could not find any employer with the email " + dto.email());
         }
 
         // Generate random 36-character string token for reset password
         //Employer employer = optional.get();
-        String token = JwtUtils.accessTokenService.generateToken(email.email());
+        String token = JwtUtils.accessTokenService.generateToken(dto.email());
         PasswordResetToken response = new PasswordResetToken(token);
         optional.get().setResetToken(token);
 
@@ -183,13 +163,12 @@ public class EmployerService implements UserDetailsService {
     }
 
     public void setPassword(ResetPasswordRequest request) {
-        Optional<Employer> optional = repository.findByEmail(JwtUtils.accessTokenService.getSubject(request.getToken()));
+        Optional<Employer> optional = findUserByResetToken(request.getToken());
 
         if (!optional.isPresent()) {
             throw new UserNotFoundException("Could not find any employer with the email " + JwtUtils.accessTokenService.getSubject(request.getToken()));
         }
-
-        optional.get().setPassword(request.getPassword());
+        updatePassword(optional.get(), request.getPassword());
     }
 
     public ResponseEntity<DataDto<Boolean>> update(EmployerUpdateDto updateDto) {
