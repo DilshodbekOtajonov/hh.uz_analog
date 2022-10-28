@@ -24,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,6 +46,8 @@ public class UserService
     private final OTPService otpService;
     private final UserRepository repository;
     private final UserMapper mapper;
+
+    private final PasswordEncoder passwordEncoder;
 
     public ResponseEntity<List<UserDto>> getAll() {
         List<UserDto> userDtos = new ArrayList<>();
@@ -106,7 +109,7 @@ public class UserService
         User authUser = user.get();
         authUser.setEmail(updateDto.getEmail());
         authUser.setFullName(updateDto.getFullName());
-        authUser.setPassword(updateDto.getPassword());
+        authUser.setPassword(passwordEncoder.encode(updateDto.getPassword()));
         authUser.setMobilePhoneNumber(updateDto.getPhoneNumber());
         authUser.setJobSearchArea(updateDto.getJobSearchArea());
         authUser.setSocialNetworks(updateDto.getSocialMedia());

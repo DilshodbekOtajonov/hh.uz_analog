@@ -14,6 +14,7 @@ import lombok.*;
 public class EmployerDto extends GenericDto {
     private String email;
     private String companyName;
+
     private Employer.EmployerStatus status;
     private String password;
 }
