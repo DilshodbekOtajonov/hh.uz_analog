@@ -28,13 +28,15 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
+    // TODO: 10/24/22 Mac address orqali verify qilish kerak 
+    // TODO: 10/24/22 Unique Serial number qo'shib berish kerak  
     private final UserService userService;
     private final static List<String> WHITE_LIST = List.of(
             "/auth/login",
             "/auth/register",
-            "/swagger-ui/.*",
+            "/swagger-ui",
             "/auth/checkOTP",
-            "/v3/api-docs.*"
+            "/v3/api-docs"
     );
 
     @Override
@@ -68,6 +70,7 @@ public class JwtFilter extends OncePerRequestFilter {
         return null;
     }
 
-    private final static Function<String, Boolean> isOpenUrl = (url) -> WHITE_LIST.stream().anyMatch(url::matches);;
+    private final static Function<String, Boolean> isOpenUrl = (url) -> WHITE_LIST.stream().anyMatch(url::startsWith);
+    ;
 
 }
