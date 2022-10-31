@@ -1,15 +1,26 @@
 package com.example.project_blueprint.enums.user;
 
+import java.util.Arrays;
+
 /**
- * @author "Otajonov Dilshodbek
- * @since 10/22/22 1:30 PM (Saturday)
- * hh.uz_analaog/IntelliJ IDEA
+ * @author "Tojaliyev Asliddin"
+ * @since 22/10/22 14:48 (Saturday)
+ * hh.uz_analog/IntelliJ IDEA
  */
 public enum EmploymentType {
-
     FULL_TIME,
     PART_TIME,
     ONE_TIME,
     VOLUNTEERING,
-    INTERNSHIP
+    INTERNSHIP;
+
+
+    public static EmploymentType findByEmploymentType(String employmentType){
+        for (EmploymentType value : values()) {
+            if (value.name().equalsIgnoreCase(employmentType)){
+                return value;
+            }
+        }
+        return FULL_TIME;
+    }
 }

@@ -5,9 +5,9 @@ import com.example.project_blueprint.dto.subscription.SubscriptionDTO;
 import org.springframework.stereotype.Service;
 
 /**
- * @author "Otajonov Dilshodbek
- * @since 10/22/22 3:05 PM (Saturday)
- * hh.uz_analaog/IntelliJ IDEA
+ * @author "Tojaliyev Asliddin"
+ * @since 23/10/22 00:04 (Sunday)
+ * hh.uz_analog/IntelliJ IDEA
  */
 
 @Service

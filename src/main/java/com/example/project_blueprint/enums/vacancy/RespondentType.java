@@ -1,15 +1,21 @@
 package com.example.project_blueprint.enums.vacancy;
 
 /**
- * @author "Otajonov Dilshodbek
- * @since 10/22/22 1:36 PM (Saturday)
- * hh.uz_analaog/IntelliJ IDEA
+ * @author "Tojaliyev Asliddin"
+ * @since 22/10/22 21:14 (Saturday)
+ * hh.uz_analog/IntelliJ IDEA
  */
-
 public enum RespondentType {
-
     APPLICANT_WITH_DISABILITIES,
     APPLICANT_WITH_INCOMPLETE_RESUME,
-    ONLY_WITH_COVER_LETTER
+    ONLY_WITH_COVER_LETTER;
 
+    public static RespondentType findByRespondentType(String respondentType){
+        for (RespondentType value : values()) {
+            if (value.name().equalsIgnoreCase(respondentType)){
+                return value;
+            }
+        }
+        return null;
+    }
 }
