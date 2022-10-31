@@ -1,9 +1,28 @@
 package com.example.project_blueprint.domains.address;
 
+import com.example.project_blueprint.domains.Auditable;
+import lombok.*;
+
+import javax.persistence.Entity;
+import java.time.LocalDateTime;
+
 /**
- * @author "Otajonov Dilshodbek
- * @since 10/22/22 12:15 PM (Saturday)
- * hh.uz_analaog/IntelliJ IDEA
+ * @author "Tojaliyev Asliddin"
+ * @since 21/10/22 18:19 (Friday)
+ * hh.uz_analog/IntelliJ IDEA
  */
-public class City {
+@Getter
+@Setter
+@NoArgsConstructor
+@Entity
+public class City extends Auditable {
+
+    private Long countryId;
+    private String cityName;
+    @Builder(builderMethodName = "childBuilder")
+    public City(Long id, Boolean deleted, LocalDateTime createdAt, Long createdBy, LocalDateTime updatedAt, Long updatedBy, Long countryId, String cityName) {
+        super(id, deleted, createdAt, createdBy, updatedAt, updatedBy);
+        this.countryId = countryId;
+        this.cityName = cityName;
+    }
 }

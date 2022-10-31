@@ -1,11 +1,17 @@
 package com.example.project_blueprint.dto.subscription;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
 /**
- * @author "Otajonov Dilshodbek
- * @since 10/22/22 3:04 PM (Saturday)
- * hh.uz_analaog/IntelliJ IDEA
+ * @author "Tojaliyev Asliddin"
+ * @since 23/10/22 00:00 (Sunday)
+ * hh.uz_analog/IntelliJ IDEA
  */
+@Getter
+@Setter
+@Builder
 public class SubscriptionDTO {
-
-
+    private String title;
 }
